@@ -58,7 +58,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void LOCATE_FUNC Blink(uint32_t dlyticks);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -67,6 +67,18 @@ void LOCATE_FUNC Blink(uint32_t dlyticks)
 {
 	HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_1);
 	HAL_Delay(dlyticks);
+}
+
+void __attribute__((__section__(".RamFunc"))) TurnOnLED(GPIO_PinState PinState)
+{
+    if(PinState != GPIO_PIN_RESET)
+    {
+    	GPIOI->BSRR = (uint32_t)GPIO_PIN_1;
+    }
+    else
+    {
+        GPIOI->BSRR = (uint32_t)GPIO_PIN_1 << 16U;
+    }
 }
 /* USER CODE END 0 */
 
@@ -105,12 +117,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  GPIO_PinState state = GPIO_PIN_RESET;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	Blink(100);
+//	Blink(100);
+
+	state = !state;
+	TurnOnLED(state);
 
 	int tx_length = sizeof(tx_buffer) / sizeof(tx_buffer[0]);
     HAL_UART_Transmit(&huart1, tx_buffer, tx_length, 10);
