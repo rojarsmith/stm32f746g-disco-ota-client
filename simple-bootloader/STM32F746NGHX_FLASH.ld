@@ -59,6 +59,18 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
+  /* This will place my named section at given address */
+  .my_buf_block_ram 0x20000100 (NOLOAD):
+  {
+    KEEP(*(.my_buf_section_ram)) /* keep my variable even if not referenced */
+  } >RAM
+
+  /* This will place my named section at given address */
+  .my_buf_block_flash 0x08001000:
+  {
+    KEEP(*(.my_buf_section_flash)) /* keep my variable even if not referenced */
+  } >FLASH
+
   /* The program code and other data into "FLASH" Rom type memory */
   .text :
   {

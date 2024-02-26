@@ -44,6 +44,11 @@
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+unsigned char __attribute__((section(".my_buf_section_ram"))) buf_ram[128];
+unsigned char __attribute__((section(".my_buf_section_flash"))) buf_flash[10] = {
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+};
+
 uint8_t tx_buffer[14] = "RojarSmith\n\r";
 /* USER CODE END PV */
 
