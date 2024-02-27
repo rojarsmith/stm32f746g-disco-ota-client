@@ -36,7 +36,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+typedef void (*ptrF)(uint32_t dlyticks);
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -68,6 +68,11 @@ void LOCATE_FUNC Blink(uint32_t dlyticks)
 	HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_1);
 	HAL_Delay(dlyticks);
 }
+
+static ptrF Functions[] =
+{
+    Blink
+};
 
 void __attribute__((__section__(".RamFunc"))) TurnOnLED(GPIO_PinState PinState)
 {
@@ -126,8 +131,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
 //	Blink(100);
 
-	state = !state;
-	TurnOnLED(state);
+//	state = !state;
+//	TurnOnLED(state);
+
+	(*Functions[0])(100);
 
 	int tx_length = sizeof(tx_buffer) / sizeof(tx_buffer[0]);
     HAL_UART_Transmit(&huart1, tx_buffer, tx_length, 10);
