@@ -114,8 +114,10 @@ void go2APP(void)
 
 	printf("BOOTLOADER Start\r\n");
 
-	//Check
-	if (((*(__IO uint32_t*) FLASH_APP_ADDR) & 0x2FFE0000) == 0x20000000)
+	// Check
+	// 128 Kb, 0~0x1FFFF, Mask=0x2FFE0000
+	// 340 Kb, 0~0x54FFF, Mask=0x2FFAB000
+	if (((*(__IO uint32_t*) FLASH_APP_ADDR) & 0x2FFAB000) == 0x20000000)
 	{
 		printf("APP Start...\r\n");
 		HAL_Delay(100);
