@@ -21,17 +21,21 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#if IAP_DEMO
+typedef void (*pFunction)(void);
+#endif
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#if IAP_DEMO
+#define FLASH_APP_ADDR 0x08008000
+#endif
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,6 +63,9 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void LOCATE_FUNC Blink(uint32_t dlyticks);
+#if IAP_DEMO
+void go2APP(void);
+#endif
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -84,6 +91,57 @@ void __attribute__((__section__(".RamFunc"))) TurnOnLED(GPIO_PinState PinState)
     {
         GPIOI->BSRR = (uint32_t)GPIO_PIN_1 << 16U;
     }
+}
+
+// printf to uart //
+//#ifdef __GNUC__
+//#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+//#else
+//#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+//#endif
+//
+//PUTCHAR_PROTOTYPE
+//{
+//    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+//    return ch;
+//}
+
+#if IAP_DEMO
+void go2APP(void)
+{
+	uint32_t jumpAddress;
+	pFunction jumpToApplication;
+
+	printf("BOOTLOADER Start\r\n");
+
+	//Check
+	if (((*(__IO uint32_t*) FLASH_APP_ADDR) & 0x2FFE0000) == 0x20000000)
+	{
+		printf("APP Start...\r\n");
+		HAL_Delay(100);
+		// Jump to user application //
+		jumpAddress = *(__IO uint32_t*)(FLASH_APP_ADDR + 4);
+		jumpToApplication = (pFunction)jumpAddress;
+		// Initialize user application's Stack Pointer //
+		__set_MSP(*(__IO uint32_t*)FLASH_APP_ADDR);
+		jumpToApplication();
+	}
+	else
+	{
+		printf("No APP found!!!\r\n");
+	}
+}
+#endif
+
+// printf to uart //
+int _write(int file, char *ptr, int len)
+{
+	int DataIdx;
+
+	for(DataIdx = 0; DataIdx < len; DataIdx++)
+	{
+		HAL_UART_Transmit(&huart1, (uint8_t*)ptr++, 1, 100);
+	}
 }
 /* USER CODE END 0 */
 
@@ -117,28 +175,42 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+#if IAP_DEMO
+    printf("IAP Demo Boot\r\n");
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  GPIO_PinState state = GPIO_PIN_RESET;
+//  GPIO_PinState state = GPIO_PIN_RESET;
 
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	Blink(100);
+#ifdef EXAMPLE_1
+	Blink(100);
+#endif
 
-//	state = !state;
-//	TurnOnLED(state);
+#ifdef EXAMPLE_2
+	state = !state;
+	TurnOnLED(state);
+#endif
 
+#ifdef EXAMPLE_3
 	(*Functions[0])(100);
+#endif
 
+#ifdef EXAMPLE_4
 	int tx_length = sizeof(tx_buffer) / sizeof(tx_buffer[0]);
     HAL_UART_Transmit(&huart1, tx_buffer, tx_length, 10);
 	HAL_Delay(1000);
+#endif
+
+#if IAP_DEMO
+	go2APP();
+#endif
   }
   /* USER CODE END 3 */
 }
