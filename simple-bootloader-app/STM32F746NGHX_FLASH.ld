@@ -45,8 +45,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM       (xrw) : ORIGIN = 0x20000000,   LENGTH = 320K
-  FLASH     (rx)  : ORIGIN = 0x08000000,   LENGTH =  32K
-  MY_MEMORY (rx)  : ORIGIN = 0x08018000,   LENGTH = 992K   
+  FLASH     (rx)  : ORIGIN = 0x08008000,   LENGTH =  64K
+  MY_MEMORY (rx)  : ORIGIN = 0x08018000,   LENGTH = 960K  
 }
 
 /* Sections */
@@ -65,12 +65,6 @@ SECTIONS
   {
     KEEP(*(.my_buf_section_ram)) /* keep my variable even if not referenced */
   } >RAM
-
-  /* This will place my named section at given address */
-  .my_buf_block_flash 0x08001000:
-  {
-    KEEP(*(.my_buf_section_flash)) /* keep my variable even if not referenced */
-  } >FLASH
 
   /* The program code and other data into "FLASH" Rom type memory */
   .text :
