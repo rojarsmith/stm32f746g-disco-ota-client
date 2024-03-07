@@ -71,6 +71,11 @@ SECTIONS
   {
     KEEP(*(.my_buf_section_flash)) /* keep my variable even if not referenced */
   } >FLASH
+  
+  .API_SHARED 0x08018000 :
+  {
+    KEEP(*(.API_SHARED))
+  } > MY_MEMORY
 
   /* The program code and other data into "FLASH" Rom type memory */
   .text :

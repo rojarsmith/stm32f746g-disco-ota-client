@@ -67,6 +67,13 @@ void LOCATE_FUNC Blink(uint32_t dlyticks);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+struct BootloaderAPI
+{
+    void (*Blink)(uint32_t dlyticks);
+    void (*TurnOn)(void);
+    void (*TurnOff)(void);
+};
+
 // printf to uart //
 int _write(int file, char *ptr, int len)
 {
@@ -86,7 +93,7 @@ int _write(int file, char *ptr, int len)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+    struct BootloaderAPI *api = (struct BootloaderAPI *) 0x08018000;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -125,6 +132,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 #if IAP_DEMO
         printf("APP Running\r\n");
+        api->Blink(200);
         HAL_Delay(1000);
 #endif
   }

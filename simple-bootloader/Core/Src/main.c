@@ -41,6 +41,13 @@ typedef void (*pFunction)(void);
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 typedef void (*ptrF)(uint32_t dlyticks);
+
+struct BootloaderSharedAPI
+{
+	void(*Blink)(uint32_t dlyticks);
+	void(*TrunOn)(void);
+	void(*TurnOff)(void);
+};
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -63,6 +70,8 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void LOCATE_FUNC Blink(uint32_t dlyticks);
+void LOCATE_FUNC TurnOn(void);
+void LOCATE_FUNC TurnOff(void);
 #if IAP_DEMO
 void go2APP(void);
 #endif
@@ -79,6 +88,23 @@ void LOCATE_FUNC Blink(uint32_t dlyticks)
 static ptrF Functions[] =
 {
     Blink
+};
+
+void LOCATE_FUNC TurnOn(void)
+{
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_SET);
+}
+
+void LOCATE_FUNC TurnOff(void)
+{
+	HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);
+}
+
+struct BootloaderSharedAPI api __attribute__((section(".API_SHARED"))) =
+{
+    Blink,
+	TurnOn,
+	TurnOff
 };
 
 void __attribute__((__section__(".RamFunc"))) TurnOnLED(GPIO_PinState PinState)
