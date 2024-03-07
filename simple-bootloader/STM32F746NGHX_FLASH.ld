@@ -75,6 +75,7 @@ SECTIONS
   .API_SHARED 0x08018000 :
   {
     KEEP(*(.API_SHARED))
+    KEEP(*(.text.add))
   } > MY_MEMORY
 
   /* The program code and other data into "FLASH" Rom type memory */

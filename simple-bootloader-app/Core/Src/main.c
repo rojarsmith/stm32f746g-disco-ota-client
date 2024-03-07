@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "staticlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,6 +120,7 @@ int main(void)
 #if IAP_DEMO
     printf("APP Running\r\n");
 #endif
+    int sum = add(1, 2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -134,6 +136,8 @@ int main(void)
         printf("APP Running\r\n");
         api->Blink(200);
         HAL_Delay(1000);
+        sum = add(sum, 1);
+        printf("%d interactions\r\n", sum);
 #endif
   }
   /* USER CODE END 3 */

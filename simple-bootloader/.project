@@ -3,6 +3,7 @@
 	<name>simple-bootloader</name>
 	<comment></comment>
 	<projects>
+		<project>simple-bootloader-staticlib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

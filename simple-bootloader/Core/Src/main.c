@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "staticlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -206,6 +207,8 @@ int main(void)
 #if IAP_DEMO
     printf("IAP Demo Boot\r\n");
 #endif
+    int sum = add(1, 2);
+    printf("%d \r\n", sum);
   /* USER CODE END 2 */
 
   /* Infinite loop */
